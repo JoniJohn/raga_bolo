@@ -17,22 +17,24 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private Task<HttpResponseMessage> PostMember(long groupId, object body) =>
-        db.HttpClient.PostAsJsonAsync($"/api/user-groups/{groupId}/members", body);
+    private Task<HttpResponseMessage> PostMember(long groupId, object body, CancellationToken cancellationToken = default) =>
+        db.HttpClient.PostAsJsonAsync($"/api/user-groups/{groupId}/members", body, cancellationToken == default ? TestContext.Current.CancellationToken : cancellationToken);
 
-    private async Task<long> CreateUserAsync(string name = "Test User")
+    private async Task<long> CreateUserAsync(string name = "Test User", CancellationToken cancellationToken = default)
     {
-        var response = await db.HttpClient.PostAsJsonAsync("/api/users", new { name });
+        var ct = cancellationToken == default ? TestContext.Current.CancellationToken : cancellationToken;
+        var response = await db.HttpClient.PostAsJsonAsync("/api/users", new { name }, ct);
         response.EnsureSuccessStatusCode();
-        var user = await response.Content.ReadFromJsonAsync<IdStub>();
+        var user = await response.Content.ReadFromJsonAsync<IdStub>(cancellationToken: ct);
         return user!.Id;
     }
 
-    private async Task<long> CreateUserGroupAsync(long ownerId, string name = "Test Group")
+    private async Task<long> CreateUserGroupAsync(long ownerId, string name = "Test Group", CancellationToken cancellationToken = default)
     {
-        var response = await db.HttpClient.PostAsJsonAsync("/api/user-groups", new { name, ownerId });
+        var ct = cancellationToken == default ? TestContext.Current.CancellationToken : cancellationToken;
+        var response = await db.HttpClient.PostAsJsonAsync("/api/user-groups", new { name, ownerId }, ct);
         response.EnsureSuccessStatusCode();
-        var group = await response.Content.ReadFromJsonAsync<GroupIdStub>();
+        var group = await response.Content.ReadFromJsonAsync<GroupIdStub>(cancellationToken: ct);
         return group!.Id;
     }
 
@@ -55,7 +57,7 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         // Assert — body
-        var json = await response.Content.ReadFromJsonAsync<MemberResponse>();
+        var json = await response.Content.ReadFromJsonAsync<MemberResponse>(cancellationToken: TestContext.Current.CancellationToken);
         json.Should().NotBeNull();
         json!.UserGroupId.Should().Be(groupId);
         json.UserId.Should().Be(userId);
@@ -121,7 +123,7 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_MEMBER_USER_ID_INVALID");
         error.Message.Should().Be("User ID must be a positive number.");
     }
@@ -143,7 +145,7 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_NOT_FOUND");
         error.Message.Should().Be("User group does not exist.");
     }
@@ -162,7 +164,7 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_NOT_FOUND");
         error.Message.Should().Be("User does not exist.");
     }
@@ -188,7 +190,7 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_MEMBER_DUPLICATE");
         error.Message.Should().Be("User is already a member of this group.");
     }
@@ -206,7 +208,7 @@ public sealed class AddUserGroupMemberTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_MEMBER_DUPLICATE");
         error.Message.Should().Be("User is already a member of this group.");
     }

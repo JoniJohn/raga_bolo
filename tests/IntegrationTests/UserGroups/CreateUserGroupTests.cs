@@ -17,15 +17,16 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private Task<HttpResponseMessage> PostUserGroup(object body) =>
-        db.HttpClient.PostAsJsonAsync("/api/user-groups", body);
+    private Task<HttpResponseMessage> PostUserGroup(object body, CancellationToken cancellationToken = default) =>
+        db.HttpClient.PostAsJsonAsync("/api/user-groups", body, cancellationToken == default ? TestContext.Current.CancellationToken : cancellationToken);
 
     /// <summary>Seeds a user and returns its generated Id.</summary>
-    private async Task<long> CreateUserAsync(string name = "Owner User")
+    private async Task<long> CreateUserAsync(string name = "Owner User", CancellationToken cancellationToken = default)
     {
-        var response = await db.HttpClient.PostAsJsonAsync("/api/users", new { name });
+        var ct = cancellationToken == default ? TestContext.Current.CancellationToken : cancellationToken;
+        var response = await db.HttpClient.PostAsJsonAsync("/api/users", new { name }, ct);
         response.EnsureSuccessStatusCode();
-        var user = await response.Content.ReadFromJsonAsync<UserStub>();
+        var user = await response.Content.ReadFromJsonAsync<UserStub>(cancellationToken: ct);
         return user!.Id;
     }
 
@@ -46,7 +47,7 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         // Assert — body
-        var json = await response.Content.ReadFromJsonAsync<UserGroupResponse>();
+        var json = await response.Content.ReadFromJsonAsync<UserGroupResponse>(cancellationToken: TestContext.Current.CancellationToken);
         json.Should().NotBeNull();
         json!.Id.Should().BeGreaterThan(0);
         json.Name.Should().Be("Tournament Admins");
@@ -71,8 +72,8 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         r1.StatusCode.Should().Be(HttpStatusCode.Created);
         r2.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var g1 = await r1.Content.ReadFromJsonAsync<UserGroupResponse>();
-        var g2 = await r2.Content.ReadFromJsonAsync<UserGroupResponse>();
+        var g1 = await r1.Content.ReadFromJsonAsync<UserGroupResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var g2 = await r2.Content.ReadFromJsonAsync<UserGroupResponse>(cancellationToken: TestContext.Current.CancellationToken);
         g1!.Id.Should().NotBe(g2!.Id);
     }
 
@@ -108,7 +109,7 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_NAME_REQUIRED");
         error.Message.Should().Be("Name is required.");
     }
@@ -125,7 +126,7 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_NAME_REQUIRED");
     }
 
@@ -141,7 +142,7 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_NAME_TOO_LONG");
         error.Message.Should().Contain("200");
     }
@@ -157,7 +158,7 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_GROUP_OWNER_INVALID");
         error.Message.Should().Be("Owner ID must be a positive number.");
     }
@@ -178,7 +179,7 @@ public sealed class CreateUserGroupTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error.Should().NotBeNull();
         error!.ErrorCode.Should().Be("USER_GROUP_OWNER_NOT_FOUND");
         error.Message.Should().Be("Owner user does not exist.");

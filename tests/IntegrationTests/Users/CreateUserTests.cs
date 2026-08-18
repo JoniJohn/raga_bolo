@@ -17,8 +17,8 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
 
     // ── Request / Response helpers ────────────────────────────────────────────
 
-    private Task<HttpResponseMessage> PostUser(object body) =>
-        db.HttpClient.PostAsJsonAsync("/api/users", body);
+    private Task<HttpResponseMessage> PostUser(object body, CancellationToken cancellationToken = default) =>
+        db.HttpClient.PostAsJsonAsync("/api/users", body, cancellationToken == default ? TestContext.Current.CancellationToken : cancellationToken);
 
     // ═════════════════════════════════════════════════════════════════════════
     // Happy path
@@ -37,7 +37,7 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         // Assert — body
-        var json = await response.Content.ReadFromJsonAsync<UserResponse>();
+        var json = await response.Content.ReadFromJsonAsync<UserResponse>(cancellationToken: TestContext.Current.CancellationToken);
         json.Should().NotBeNull();
         json!.Id.Should().BeGreaterThan(0);
         json.Name.Should().Be("John Doe");
@@ -62,7 +62,7 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         // Assert — body
-        var json = await response.Content.ReadFromJsonAsync<UserResponse>();
+        var json = await response.Content.ReadFromJsonAsync<UserResponse>(cancellationToken: TestContext.Current.CancellationToken);
         json.Should().NotBeNull();
         json!.Id.Should().BeGreaterThan(0);
         json.Name.Should().Be("Jane Doe");
@@ -84,8 +84,8 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         r1.StatusCode.Should().Be(HttpStatusCode.Created);
         r2.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var u1 = await r1.Content.ReadFromJsonAsync<UserResponse>();
-        var u2 = await r2.Content.ReadFromJsonAsync<UserResponse>();
+        var u1 = await r1.Content.ReadFromJsonAsync<UserResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var u2 = await r2.Content.ReadFromJsonAsync<UserResponse>(cancellationToken: TestContext.Current.CancellationToken);
         u1!.Id.Should().NotBe(u2!.Id);
     }
 
@@ -105,7 +105,7 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error.Should().NotBeNull();
         error!.ErrorCode.Should().Be("USER_NAME_REQUIRED");
         error.Message.Should().Be("Name is required.");
@@ -123,7 +123,7 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_NAME_REQUIRED");
     }
 
@@ -139,7 +139,7 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error!.ErrorCode.Should().Be("USER_NAME_TOO_LONG");
         error.Message.Should().Contain("255");
     }
@@ -162,7 +162,7 @@ public sealed class CreateUserTests(DatabaseFixture db) : IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
 
-        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: TestContext.Current.CancellationToken);
         error.Should().NotBeNull();
         error!.ErrorCode.Should().Be("USER_AUTH_ID_DUPLICATE");
         error.Message.Should().Be("A user with this Auth ID already exists.");
