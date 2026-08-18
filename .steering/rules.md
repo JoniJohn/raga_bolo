@@ -44,3 +44,11 @@
 - Refer to `.steering/schema-reference.md` for entity names, column definitions, and foreign key relationships.
 - DO NOT generate full DbContext or migrations for all referenced tables upfront.
 - Only introduce the specific entities and EF Core mappings required for the current endpoint task.
+
+## Base Entity & Audit Standard
+- ALL domain entities MUST inherit from `BaseEntity` (`src/Domain/Common/BaseEntity.cs`).
+- Common Audit Fields:
+  - `IsActive` (`bool`, default = `true`)
+  - `CreatedAt` (`DateTimeOffset`, set automatically on creation)
+  - `UpdatedAt` (`DateTimeOffset?`, updated automatically via `DbContext.SaveChangesAsync`)
+- Domain logic must use explicit domain methods (e.g., `Deactivate()`, `Activate()`) to toggle status rather than directly modifying properties.

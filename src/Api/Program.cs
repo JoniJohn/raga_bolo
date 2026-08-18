@@ -82,7 +82,7 @@ app.MapScalarApiReference(options =>
 {
     options.Title = "Raga Bolo API";
     options.Theme = ScalarTheme.DeepSpace;
-    options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+    options.WithDefaultHttpClient(ScalarTarget.Shell, ScalarClient.Curl);
 });                                    // serves /scalar/v1
 
 // ── Health Check Endpoint ─────────────────────────────────────────────────────

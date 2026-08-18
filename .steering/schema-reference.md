@@ -5,6 +5,14 @@ This document serves as the target blueprint for Entity Framework Core entity co
 > **STRICT RULE:** > Do NOT build EF Core migrations or DbContext sets for all tables at once. 
 > Only implement and map the specific tables/entities required for the current single-endpoint task.
 
+## Global Schema Rule: Common Columns
+Every table defined below implicitly inherits the following columns from `BaseEntity`:
+- `is_active` (`boolean`, NOT NULL, Default: `true`)
+- `created_at` (`timestamp with time zone`, NOT NULL, Default: `NOW()`)
+- `updated_at` (`timestamp with time zone`, NULLABLE)
+
+*Do not omit these columns when generating EF Core entity configurations or SQL migrations.*
+
 ---
 
 ## 1. Schema Namespaces & Modules
