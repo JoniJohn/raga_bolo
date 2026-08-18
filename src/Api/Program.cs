@@ -31,8 +31,6 @@ builder.Services.AddOpenApi(options =>
         doc.Info.Version = "v1";
         doc.Info.Description = "Tournament management system: creation, participants, fixtures, and live match events.";
 
-        // Health check endpoints are not picked up automatically — add manually.
-        // OpenAPI.NET v2 uses HttpMethod as the operation key (no OperationType enum).
         doc.Paths ??= new Microsoft.OpenApi.OpenApiPaths();
         var healthOperation = new Microsoft.OpenApi.OpenApiOperation
         {
@@ -66,6 +64,17 @@ builder.Services.AddHealthChecks()
         tags: ["db", "ready"]);
 
 var app = builder.Build();
+
+// ── Auto Migration ────────────────────────────────────────────────────────────
+if (args.Contains("--migrate-only"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    db.Database.Migrate();
+    Console.WriteLine("Database migration completed.");
+    return; // 👈 exit container
+}
 
 // ── OpenAPI / Scalar UI ───────────────────────────────────────────────────────
 app.MapOpenApi();                      // serves /openapi/v1.json
