@@ -3,7 +3,7 @@ using Raga.Domain.UserGroups.Rules;
 
 namespace Raga.Domain.UserGroups;
 
-public sealed class UserGroup
+public sealed class UserGroup : BaseEntity
 {
     public long Id { get; private set; }
     public string Name { get; private set; } = string.Empty;

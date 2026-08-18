@@ -1,6 +1,8 @@
+using Raga.Domain.Common;
+
 namespace Raga.Domain.UserGroups;
 
-public sealed class UserGroupMember
+public sealed class UserGroupMember : BaseEntity
 {
     public long UserGroupId { get; private set; }
     public long UserId { get; private set; }

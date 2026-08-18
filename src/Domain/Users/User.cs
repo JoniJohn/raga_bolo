@@ -3,7 +3,7 @@ using Raga.Domain.Users.Rules;
 
 namespace Raga.Domain.Users;
 
-public sealed class User
+public sealed class User : BaseEntity
 {
     public long Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
