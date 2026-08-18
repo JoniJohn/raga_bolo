@@ -1,0 +1,11 @@
+C:\Users\whose\Development\MISC\raga\src\Domain\bin\Debug\net10.0\Raga.Domain.deps.json
+C:\Users\whose\Development\MISC\raga\src\Domain\bin\Debug\net10.0\Raga.Domain.dll
+C:\Users\whose\Development\MISC\raga\src\Domain\bin\Debug\net10.0\Raga.Domain.pdb
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\Raga.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\Raga.Domain.AssemblyInfoInputs.cache
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\Raga.Domain.AssemblyInfo.cs
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\Raga.Domain.csproj.CoreCompileInputs.cache
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\Raga.Domain.dll
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\refint\Raga.Domain.dll
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\Raga.Domain.pdb
+C:\Users\whose\Development\MISC\raga\src\Domain\obj\Debug\net10.0\ref\Raga.Domain.dll

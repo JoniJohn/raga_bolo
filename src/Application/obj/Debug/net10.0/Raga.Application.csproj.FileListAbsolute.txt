@@ -1,0 +1,15 @@
+c:\Users\whose\Development\MISC\raga\src\Application\bin\Debug\net10.0\Raga.Application.deps.json
+C:\Users\whose\Development\MISC\raga\src\Application\bin\Debug\net10.0\Raga.Application.dll
+C:\Users\whose\Development\MISC\raga\src\Application\bin\Debug\net10.0\Raga.Application.pdb
+C:\Users\whose\Development\MISC\raga\src\Application\bin\Debug\net10.0\Raga.Domain.dll
+C:\Users\whose\Development\MISC\raga\src\Application\bin\Debug\net10.0\Raga.Domain.pdb
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.csproj.AssemblyReference.cache
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.AssemblyInfoInputs.cache
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.AssemblyInfo.cs
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.csproj.CoreCompileInputs.cache
+c:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.App.A612EB25.Up2Date
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.dll
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\refint\Raga.Application.dll
+C:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\Raga.Application.pdb
+c:\Users\whose\Development\MISC\raga\src\Application\obj\Debug\net10.0\ref\Raga.Application.dll
