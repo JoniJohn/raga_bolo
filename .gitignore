@@ -1,0 +1,16 @@
+## Ignore Visual Studio / .NET build outputs
+**/[Bb]in/
+**/[Oo]bj/
+**/[Ll]og/
+**/[Ll]ogs/
+**/TestResults/
+**/.vs/
+**/..idea/
+
+## User-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+## Docker
+.env
