@@ -15,8 +15,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'raga_api-env', variable: 'ENV_FILE')]) {
                     sh '''
                         cp "$ENV_FILE" "$WORKSPACE/.env"
-                        pwd
-                        docker compose up -d --build --remove-orphans
+                        docker compose -f docker-compose.yml up -d --build --remove-orphans
                     '''
                 }
             }
