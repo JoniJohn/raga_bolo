@@ -1,5 +1,4 @@
 using Raga.Domain.Common;
-using Raga.Domain.UserGroups.Rules;
 
 namespace Raga.Domain.UserGroups;
 
@@ -24,17 +23,14 @@ public sealed class UserGroup : BaseEntity
     /// </summary>
     public static Result<UserGroup> Create(string name, long ownerId)
     {
-        var nameRequiredRule = new UserGroupNameRequiredRule(name);
-        if (nameRequiredRule.IsBroken())
-            return Result<UserGroup>.Failure(nameRequiredRule.ErrorCode, nameRequiredRule.Message);
+        if (string.IsNullOrWhiteSpace(name))
+            return Result<UserGroup>.Failure("USER_GROUP_NAME_REQUIRED", "Name is required.");
 
-        var nameMaxLengthRule = new UserGroupNameMaxLengthRule(name);
-        if (nameMaxLengthRule.IsBroken())
-            return Result<UserGroup>.Failure(nameMaxLengthRule.ErrorCode, nameMaxLengthRule.Message);
+        if (name.Length > 200)
+            return Result<UserGroup>.Failure("USER_GROUP_NAME_TOO_LONG", "Name must not exceed 200 characters.");
 
-        var ownerIdValidRule = new UserGroupOwnerIdValidRule(ownerId);
-        if (ownerIdValidRule.IsBroken())
-            return Result<UserGroup>.Failure(ownerIdValidRule.ErrorCode, ownerIdValidRule.Message);
+        if (ownerId <= 0)
+            return Result<UserGroup>.Failure("USER_GROUP_OWNER_INVALID", "Owner ID must be a positive number.");
 
         return Result<UserGroup>.Success(new UserGroup(name, ownerId));
     }

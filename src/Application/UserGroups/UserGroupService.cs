@@ -33,7 +33,7 @@ public sealed class UserGroupService(
         await userGroupRepository.SaveChangesAsync(cancellationToken);
 
         // 4. Seed owner as the first member in the same logical operation
-        var ownerMember = new UserGroupMember(userGroup.Id, userGroup.OwnerId);
+        var ownerMember = UserGroupMember.Create(userGroup.Id, userGroup.OwnerId).Value!;
         await memberRepository.AddAsync(ownerMember, cancellationToken);
         await memberRepository.SaveChangesAsync(cancellationToken);
 

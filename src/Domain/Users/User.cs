@@ -1,5 +1,4 @@
 using Raga.Domain.Common;
-using Raga.Domain.Users.Rules;
 
 namespace Raga.Domain.Users;
 
@@ -24,13 +23,11 @@ public sealed class User : BaseEntity
     /// </summary>
     public static Result<User> Create(string name, Guid? authId = null)
     {
-        var requiredRule = new UserNameRequiredRule(name);
-        if (requiredRule.IsBroken())
-            return Result<User>.Failure(requiredRule.ErrorCode, requiredRule.Message);
+        if (string.IsNullOrWhiteSpace(name))
+            return Result<User>.Failure("USER_NAME_REQUIRED", "Name is required.");
 
-        var maxLengthRule = new UserNameMaxLengthRule(name);
-        if (maxLengthRule.IsBroken())
-            return Result<User>.Failure(maxLengthRule.ErrorCode, maxLengthRule.Message);
+        if (name.Length > 255)
+            return Result<User>.Failure("USER_NAME_TOO_LONG", "Name must not exceed 255 characters.");
 
         return Result<User>.Success(new User(name, authId));
     }
