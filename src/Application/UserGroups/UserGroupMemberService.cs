@@ -2,7 +2,6 @@ using Raga.Application.UserGroups.DTOs;
 using Raga.Application.Users;
 using Raga.Domain.Common;
 using Raga.Domain.UserGroups;
-using Raga.Domain.UserGroups.Rules;
 
 namespace Raga.Application.UserGroups;
 
@@ -16,10 +15,10 @@ public sealed class UserGroupMemberService(
         CancellationToken cancellationToken = default)
     {
         // 1. Domain validation — userId must be positive
-        var userIdValidRule = new UserGroupMemberUserIdValidRule(request.UserId);
-        if (userIdValidRule.IsBroken())
+        var memberResult = UserGroupMember.Create(userGroupId, request.UserId);
+        if (!memberResult.IsSuccess)
             return Result<UserGroupMemberResponse>.Failure(
-                userIdValidRule.ErrorCode, userIdValidRule.Message);
+                memberResult.ErrorCode, memberResult.ErrorMessage);
 
         // 2. Cross-entity policy: group must exist
         var groupExists = await memberRepository.GroupExistsAsync(userGroupId, cancellationToken);
@@ -43,7 +42,7 @@ public sealed class UserGroupMemberService(
                 "User is already a member of this group.");
 
         // 5. Persist
-        var member = new UserGroupMember(userGroupId, request.UserId);
+        var member = memberResult.Value!;
         await memberRepository.AddAsync(member, cancellationToken);
         await memberRepository.SaveChangesAsync(cancellationToken);
 
