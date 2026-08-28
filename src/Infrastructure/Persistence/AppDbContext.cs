@@ -3,6 +3,8 @@ using Raga.Domain.Common;
 using Raga.Domain.UserGroups;
 using Raga.Domain.Users;
 
+using Raga.Domain.Tournaments;
+
 namespace Raga.Infrastructure.Persistence;
 
 /// <summary>
@@ -14,6 +16,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users => Set<User>();
     public DbSet<UserGroup> UserGroups => Set<UserGroup>();
     public DbSet<UserGroupMember> UserGroupMembers => Set<UserGroupMember>();
+    public DbSet<Tournament> Tournaments => Set<Tournament>();
+    public DbSet<TournamentCupType> TournamentCupTypes => Set<TournamentCupType>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

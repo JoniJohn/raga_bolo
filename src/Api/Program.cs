@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Raga.Application.Tournaments;
 using Raga.Application.UserGroups;
 using Raga.Application.Users;
 using Raga.Infrastructure.Persistence;
@@ -18,6 +19,8 @@ builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>();
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
 builder.Services.AddScoped<IUserGroupMemberRepository, UserGroupMemberRepository>();
 builder.Services.AddScoped<IUserGroupMemberService, UserGroupMemberService>();
+builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 
 // ── API / MVC ─────────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
