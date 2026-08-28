@@ -27,12 +27,44 @@ public sealed class TournamentCupTypeConfiguration : IEntityTypeConfiguration<To
             .HasMaxLength(500)
             .IsRequired(false);
 
-        // Static configuration seed data
+        // Static configuration seed data with static timestamp to prevent dynamic model change warnings
         builder.HasData(
-            new TournamentCupType(1, "SL", "Single Fixture League", "Single fixture league tournament format"),
-            new TournamentCupType(2, "HAD", "Home and Away League", "Home and away league tournament format"),
-            new TournamentCupType(3, "SK", "Single Fixture Knockout", "Single fixture knockout tournament format"),
-            new TournamentCupType(4, "HAK", "Home and Away Knockout", "Home and away knockout tournament format")
+            new
+            {
+                Id = 1,
+                Code = "SL",
+                Name = "Single Fixture League",
+                Description = "Single fixture league tournament format",
+                IsActive = true,
+                CreatedAt = new DateTimeOffset(new DateTime(2026, 8, 28, 14, 32, 47, 612, DateTimeKind.Unspecified).AddTicks(5307), TimeSpan.Zero)
+            },
+            new
+            {
+                Id = 2,
+                Code = "HAD",
+                Name = "Home and Away League",
+                Description = "Home and away league tournament format",
+                IsActive = true,
+                CreatedAt = new DateTimeOffset(new DateTime(2026, 8, 28, 14, 32, 47, 612, DateTimeKind.Unspecified).AddTicks(9364), TimeSpan.Zero)
+            },
+            new
+            {
+                Id = 3,
+                Code = "SK",
+                Name = "Single Fixture Knockout",
+                Description = "Single fixture knockout tournament format",
+                IsActive = true,
+                CreatedAt = new DateTimeOffset(new DateTime(2026, 8, 28, 14, 32, 47, 612, DateTimeKind.Unspecified).AddTicks(9369), TimeSpan.Zero)
+            },
+            new
+            {
+                Id = 4,
+                Code = "HAK",
+                Name = "Home and Away Knockout",
+                Description = "Home and away knockout tournament format",
+                IsActive = true,
+                CreatedAt = new DateTimeOffset(new DateTime(2026, 8, 28, 14, 32, 47, 612, DateTimeKind.Unspecified).AddTicks(9371), TimeSpan.Zero)
+            }
         );
     }
 }
